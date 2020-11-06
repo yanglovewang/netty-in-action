@@ -19,7 +19,7 @@ public class BlockingIoExample {
      * */
     public void serve(int portNumber) throws IOException {
         ServerSocket serverSocket = new ServerSocket(portNumber);
-        Socket clientSocket = serverSocket.accept();
+        Socket clientSocket = serverSocket.accept();            // 如果没有客户端发送请求会一直阻塞在这个地方
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(clientSocket.getInputStream()));
         PrintWriter out =
@@ -36,5 +36,10 @@ public class BlockingIoExample {
 
     private String processRequest(String request){
         return "Processed";
+    }
+
+    public static void main(String[] args) throws IOException {
+        BlockingIoExample server = new BlockingIoExample();
+        server.serve(25);
     }
 }

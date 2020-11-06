@@ -24,37 +24,31 @@ public class EchoServer {
 
     public static void main(String[] args)
         throws Exception {
-        if (args.length != 1) {
-            System.err.println("Usage: " + EchoServer.class.getSimpleName() +
-                " <port>"
-            );
-            return;
-        }
-        int port = Integer.parseInt(args[0]);
+        int port = 25;
         new EchoServer(port).start();
     }
 
     public void start() throws Exception {
-        final EchoServerHandler serverHandler = new EchoServerHandler();
-        EventLoopGroup group = new NioEventLoopGroup();
+        final EchoServerHandler serverHandler = new EchoServerHandler(); //消息处理器
+        EventLoopGroup group = new NioEventLoopGroup();  // 用于事件处理
         try {
-            ServerBootstrap b = new ServerBootstrap();
+            ServerBootstrap b = new ServerBootstrap();  // 引导绑定服务器
             b.group(group)
                 .channel(NioServerSocketChannel.class)
-                .localAddress(new InetSocketAddress(port))
-                .childHandler(new ChannelInitializer<SocketChannel>() {
+                .localAddress(new InetSocketAddress(port)) //指定端口设置套接字地址
+                .childHandler(new ChannelInitializer<SocketChannel>() { // 添加一个EchoServerHandler 到子Channel 的 ChannelPipeline
                     @Override
                     public void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(serverHandler);
+                        ch.pipeline().addLast(serverHandler);  //ChannelPipeline 是一个用于注册handler的容器
                     }
                 });
 
-            ChannelFuture f = b.bind().sync();
+            ChannelFuture f = b.bind().sync(); // 异步绑定服务器
             System.out.println(EchoServer.class.getName() +
                 " started and listening for connections on " + f.channel().localAddress());
             f.channel().closeFuture().sync();
         } finally {
-            group.shutdownGracefully().sync();
+            group.shutdownGracefully().sync(); // 关闭关闭 EventLoopGroup，释放资源
         }
     }
 }

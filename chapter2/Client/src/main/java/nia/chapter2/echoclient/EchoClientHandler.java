@@ -12,7 +12,7 @@ import io.netty.util.CharsetUtil;
  *
  * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
  */
-@Sharable
+@Sharable //标记可以被多个 channel 共享
 public class EchoClientHandler
     extends SimpleChannelInboundHandler<ByteBuf> {
     @Override
@@ -22,7 +22,7 @@ public class EchoClientHandler
     }
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, ByteBuf in) {
+    public void channelRead0(ChannelHandlerContext ctx, ByteBuf in) {  //记录已接受消息
         System.out.println(
                 "Client received: " + in.toString(CharsetUtil.UTF_8));
     }
